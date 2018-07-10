@@ -104,7 +104,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_play_arrow_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_format_bold_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -114,11 +114,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="64" />
-                            <entry key="outputName" value="ic_play_64" />
+                            <entry key="outputName" value="ic_b" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Luke" />
-                            <entry key="width" value="64" />
                           </map>
                         </option>
                       </PersistentState>
