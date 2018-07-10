@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Coopers Hooked</string>
+    <string name="action_settings">Settings</string>
+    <string name="stories">Stories</string>
+    <string name="about">About</string>
+    <string name="title_activity_stories_menu">StoriesMenu</string>
+    <string name="title_activity_story_view">StoryView</string>
+    <string name="dad">Dad</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="autoLoadStory">Automatically load stories</string>
+    <string name="randomExit">Randomly Exit App</string>
+    <string name="title_activity_about">About</string>
+    <string name="ifYouDontKnow">If you don\'t know what it is, it\'s an app</string>
+    <string name="hurtFeelings">Please don\'t hurt our feelings with your rating</string>
+    <string name="games">Games</string>
+    <string name="title_activity_games_menu">GamesMenu</string>
+    <string name="title_activity_ogrgame">OGRGame</string>
+    <string name="snogroadieake">Sn(Og Roadie)ake</string>
+    <string name="title_activity_ogrsweeper">OGRSweeper</string>
+</resources>

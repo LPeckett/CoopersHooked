@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/chatBubbleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="1dp"
+        android:gravity="left">
+
+        <TextView
+            android:id="@+id/chatPersonTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"/>
+
+        <TextView
+            android:id="@+id/chatBubbleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chatPersonTitle"
+            android:background="@drawable/bubble_left"
+            android:gravity="left"
+            android:maxWidth="300dp"
+            android:text="Temp Text"
+            android:textSize="24sp" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
