@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
@@ -29,6 +30,7 @@ import java.util.Random;
 public class OGRSweeper extends AppCompatActivity implements View.OnTouchListener{
 
     private ImageButton backButton;
+    private TextView scoreView;
     private RelativeLayout gameLayout;
     private OGRSweeperGame game;
 
@@ -49,8 +51,10 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         backButton = findViewById(R.id.ogrsBackButton);
         backButton.setOnTouchListener(this);
 
+        scoreView = findViewById(R.id.ogrsScoreTextView);
+
         gameLayout = findViewById(R.id.ogrsLayout);
-        game = new OGRSweeperGame(this, gridSize);
+        game = new OGRSweeperGame(this, gridSize, scoreView);
         gameLayout.addView(game);
 
 
@@ -90,15 +94,24 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         private ArrayList<ArrayList<Button>> buttons;
         private ArrayList<ArrayList<Boolean>> clicked;
         private ArrayList<ArrayList<Integer>> bombPositions;
+        private ArrayList<ArrayList<Integer>> numNearBombs;
 
         private int size;
         private int numMines = 10;
         private Random rand;
+        private boolean gameOver = false;
+        private TextView scoreView;
 
-        public OGRSweeperGame(Context context, int size){
+        private Toast gridLocToast;
+
+        public OGRSweeperGame(Context context, int size, TextView scoreView){
             super(context);
             this.size = size;
-            rand = new Random();
+            this.rand = new Random();
+            this.scoreView = scoreView;
+
+            gridLocToast = Toast.makeText(context, "0, 0", Toast.LENGTH_SHORT);
+
             initGrid(context, size);
         }
 
@@ -148,14 +161,40 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                 }
             }
 
+            numNearBombs = new ArrayList<>();
+            for(int i = 0; i < size; i++) {
+                numNearBombs.add(new ArrayList<Integer>());
+                for(int j = 0; j < size; j++) {
+                    int surroundingBombCount = 0;
+                    for(int x = i - 1; x < i + 1; x++) {
+                        for(int y = j - 1; y < j + 1; y++) {
+                            if(x >= 0 && x < buttons.size() && y >= 0 && y < buttons.size()) {
+                                if(bombPositions.get(x).get(y) == 1) {
+                                    surroundingBombCount ++;
+                                }
+                            }
+                        }
+                    }
+                    numNearBombs.get(i).add(surroundingBombCount);
+                }
+            }
+
         }
 
         @Override
         public void onClick(View v) {
+
             OGRSButton tempButton = (OGRSButton) v;
             int row = tempButton.getId() / size;
             int col = tempButton.getId() % size;
+
+            gridLocToast.cancel();
+            gridLocToast = Toast.makeText(v.getContext(), String.valueOf(col + ", " + String.valueOf(row) + " : " + String.valueOf(bombPositions.get(col).get(row))), Toast.LENGTH_LONG);
+            gridLocToast.show();
+
+            clicked.get(row).set(col, true);
             v.setClickable(false);
+
             int surroundingBombCount = 0;
             for(int i = col - 1; i < col + 1; i++) {
                 for(int j = row - 1; j < row + 1; j++) {
@@ -166,6 +205,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                     }
                 }
             }
+
             if(surroundingBombCount < 0) {
                 v.setBackgroundColor(Color.LTGRAY);
             }
@@ -173,8 +213,10 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                 ((OGRSButton) v).setText(String.valueOf(surroundingBombCount));
             }
 
-            if(bombPositions.get(row).get(col) == 1) {
+            if(bombPositions.get(col).get(row) == 1) {
                 ((OGRSButton) v).setText("X");
+                gameOver = true;
+                scoreView.setText(R.string.gameOver);
             }
         }
     }

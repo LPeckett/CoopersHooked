@@ -18,4 +18,6 @@
     <string name="title_activity_ogrgame">OGRGame</string>
     <string name="snogroadieake">Sn(Og Roadie)ake</string>
     <string name="title_activity_ogrsweeper">OGRSweeper</string>
+    <string name="score_0">Score: 0</string>
+    <string name="gameOver">Game Over</string>
 </resources>
