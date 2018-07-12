@@ -155,7 +155,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                         randInt = rand.nextInt(size * size);
                     }
                     else {
-                        bombPositions.get(row).set(col, 1);
+                        bombPositions.get(col).set(row, 1);
                         inUse = false;
                     }
                 }
@@ -192,12 +192,21 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
             gridLocToast = Toast.makeText(v.getContext(), String.valueOf(col + ", " + String.valueOf(row) + " : " + String.valueOf(bombPositions.get(col).get(row))), Toast.LENGTH_LONG);
             gridLocToast.show();
 
-            clicked.get(row).set(col, true);
             v.setClickable(false);
 
+            checkSurroundings(row, col, v);
+
+            if(bombPositions.get(col).get(row) == 1) {
+                ((OGRSButton) v).setText("X");
+                gameOver = true;
+                scoreView.setText(R.string.gameOver);
+            }
+        }
+
+        private void checkSurroundings(int row, int col, View v) {
             int surroundingBombCount = 0;
-            for(int i = col - 1; i < col + 1; i++) {
-                for(int j = row - 1; j < row + 1; j++) {
+            for(int i = col - 1; i < col + 2; i++) {
+                for(int j = row - 1; j < row + 2; j++) {
                     if(i >= 0 && i < buttons.size() && j >= 0 && j < buttons.size()) {
                         if(bombPositions.get(i).get(j) == 1) {
                             surroundingBombCount ++;
@@ -206,19 +215,26 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                 }
             }
 
-            if(surroundingBombCount < 0) {
-                v.setBackgroundColor(Color.LTGRAY);
+            if(surroundingBombCount == 0) {
+                Log.w("Working", "Working");
+                ((OGRSButton) v).setText("0");
+                clicked.get(row).set(col, true);
+                for(int i = col - 1; i < col + 2; i++) {
+                    for(int j = row - 1; j < row + 2; j++) {
+                        if(i >= 0 && i < buttons.size() && j >= 0 && j < buttons.size() && !clicked.get(row).get(col)) {
+                            if(bombPositions.get(i).get(j) == 1) {
+                                checkSurroundings(row, col, buttons.get(col).get(row));
+                            }
+                        }
+                    }
+                }
             }
             else {
-                ((OGRSButton) v).setText(String.valueOf(surroundingBombCount));
-            }
-
-            if(bombPositions.get(col).get(row) == 1) {
-                ((OGRSButton) v).setText("X");
-                gameOver = true;
-                scoreView.setText(R.string.gameOver);
+                ((OGRSButton)v).setText(String.valueOf(surroundingBombCount));
+                clicked.get(row).set(col, true);
             }
         }
+
     }
 
 }
