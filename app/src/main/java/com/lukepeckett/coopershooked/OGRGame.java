@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
+import android.media.AudioManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -49,6 +50,7 @@ public class OGRGame extends AppCompatActivity implements View.OnClickListener, 
 
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         getWindow().getDecorView().setSystemUiVisibility(flags);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         loadComponents();
         playGame();

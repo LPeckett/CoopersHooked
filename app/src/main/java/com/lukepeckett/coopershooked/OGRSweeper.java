@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +22,7 @@ import android.widget.ToggleButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.GridCell;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSGridAdapter;
+import com.lukepeckett.coopershooked.media.SoundController;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,6 +34,8 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
     private RelativeLayout gameLayout;
     private OGRSweeperGame game;
     private ToggleButton flagButton;
+    private Button settingsButton;
+    private Button newGameButton;
 
     private boolean shouldFlag = false;
     private int gridSize = 8;
@@ -41,6 +46,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         getWindow().getDecorView().setSystemUiVisibility(flags);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         setContentView(R.layout.activity_ogrsweeper);
         loadComponents();
@@ -58,6 +64,12 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
         flagButton = findViewById(R.id.ogrsFlagButton);
         flagButton.setOnClickListener(this);
+
+        settingsButton = findViewById(R.id.ogrsSettingsButton);
+        settingsButton.setOnClickListener(this);
+
+        newGameButton = findViewById(R.id.ogrsNewGameButton);
+        newGameButton.setOnClickListener(this);
 
     }
 
@@ -99,6 +111,10 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
             case R.id.ogrsFlagButton:
                 flagButtonPressed();
                 return;
+
+            case R.id.ogrsNewGameButton:
+                game.initGrid(this, gridSize);
+                return;
         }
     }
 
@@ -110,13 +126,13 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
         private int size;
         private int numMines = 10;
-        private int flagsPlaced = 0;
+        private int flagsPlaced;
         private Random rand;
         private boolean gameOver = false;
         private TextView scoreView;
         private Context context;
-        private Toast gridLocToast;
         private boolean flagCells = false;
+        private boolean gameWon = false;
 
         public OGRSweeperGame(Context context, int size, TextView scoreView){
             super(context);
@@ -124,12 +140,14 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
             this.rand = new Random();
             this.scoreView = scoreView;
             this.context = context;
-            gridLocToast = Toast.makeText(context, "0, 0", Toast.LENGTH_SHORT);
 
             initGrid(context, size);
         }
 
         public void initGrid(Context context, int size) {
+
+            flagsPlaced = 0;
+
             this.setNumColumns(size);
 
             buttons = new ArrayList<>();
@@ -187,11 +205,46 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                 }
             }
 
+            scoreView.setText(String.valueOf(numMines));
+
+        }
+
+        private boolean checkWin() {
+            Log.w("Checking win", "Checking......");
+            gameWon = true;
+            for(ArrayList<GridCell> gridCells : cells) {
+                for(GridCell g : gridCells) {
+                    if(g.getStatus() == GridCell.EMPTY && !g.hasBomb()) {
+                        gameWon = false;
+                    }
+                }
+            }
+
+            if(gameWon) {
+                scoreView.setText("Game Won");
+                Log.w("Checking win", "Won");
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private void gameLost() {
+            for(int i = 0; i < size; i ++) {
+                for(int j = 0; j < size; j ++) {
+                    if(cells.get(i).get(j).hasBomb()) {
+                        buttons.get(i).get(j).setText("X");
+                        buttons.get(i).get(j).getBackground().setColorFilter(0xe0444444, PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            }
+            gameOver = true;
         }
 
         @Override
         public void onClick(View v) {
 
+            gameOver = checkWin();
             if(gameOver)
                 return;
 
@@ -205,27 +258,34 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                 cells.get(col).get(row).setStatus(GridCell.FLAGGED_EMPTY);
                 flagsPlaced ++;
                 scoreView.setText(String.valueOf(numMines - flagsPlaced));
+                gameOver = checkWin();
                 return;
             }
 
             if(cells.get(col).get(row).getStatus() == GridCell.FLAGGED_EMPTY) {
-                if(!flagCells)
+                if(!flagCells) {
+                    gameOver = checkWin();
                     return;
+                }
                 else if(flagCells){
                     ((OGRSButton)v).setText("");
                     cells.get(col).get(row).setStatus(GridCell.EMPTY);
                     v.getBackground().clearColorFilter();
                     flagsPlaced --;
                     scoreView.setText(String.valueOf(numMines - flagsPlaced));
+                    gameOver = checkWin();
                     return;
                 }
             }
 
             if(cells.get(col).get(row).hasBomb() && cells.get(col).get(row).getStatus() != GridCell.FLAGGED_EMPTY) {
                 ((OGRSButton) v).setText("X");
-                gameOver = true;
+                v.getBackground().setColorFilter(0xe0444444, PorterDuff.Mode.SRC_ATOP);
+                gameLost();
                 scoreView.setText(R.string.gameOver);
                 v.setClickable(false);
+                SoundController.mediaPlayer = MediaPlayer.create(context, R.raw.aww_man);
+                SoundController.mediaPlayer.start();
                 return;
             }
 
@@ -258,6 +318,8 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
                     }
                 }
             }
+
+            gameOver = checkWin();
         }
 
         public boolean isFlagCells() {

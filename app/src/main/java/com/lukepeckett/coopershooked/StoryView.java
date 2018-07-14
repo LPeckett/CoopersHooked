@@ -2,6 +2,7 @@ package com.lukepeckett.coopershooked;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,7 @@ public class StoryView extends AppCompatActivity implements View.OnClickListener
 
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         getWindow().getDecorView().setSystemUiVisibility(flags);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         loadComponents();
         storyID = getIntent().getIntExtra("storyID", 0);

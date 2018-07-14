@@ -2,6 +2,7 @@ package com.lukepeckett.coopershooked;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         getWindow().getDecorView().setSystemUiVisibility(flags);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         loadSettings();
         loadComponents();
