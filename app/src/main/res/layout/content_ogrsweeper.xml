@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
-        android:text="TextView"
+        android:text="@string/ogrsSweeper"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/score_0" />
+            android:text="@string/score_0"
+            android:textSize="24sp" />
     </RelativeLayout>
+
+    <ToggleButton
+        android:id="@+id/ogrsFlagButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/flag"
+        android:textOff="@string/flag"
+        android:textOn="@string/flag"
+        app:layout_constraintBottom_toTopOf="@+id/ogrsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

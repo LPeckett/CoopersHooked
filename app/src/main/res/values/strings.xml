@@ -20,4 +20,6 @@
     <string name="title_activity_ogrsweeper">OGRSweeper</string>
     <string name="score_0">Score: 0</string>
     <string name="gameOver">Game Over</string>
+    <string name="flag"> Flag</string>
+    <string name="ogrsSweeper">OG Roadie Sweeper</string>
 </resources>

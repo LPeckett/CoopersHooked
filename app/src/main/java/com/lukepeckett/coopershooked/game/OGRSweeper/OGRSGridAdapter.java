@@ -27,8 +27,8 @@ public class OGRSGridAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        int row = position / buttons.size();
-        int col = position % buttons.size();
+        int col = position / buttons.size();
+        int row = position % buttons.size();
         return buttons.get(col).get(row);
     }
 
@@ -40,8 +40,8 @@ public class OGRSGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        int row = position / buttons.size();
-        int col = position % buttons.size();
+        int col = position / buttons.size();
+        int row = position % buttons.size();
 
         return buttons.get(col).get(row);
     }

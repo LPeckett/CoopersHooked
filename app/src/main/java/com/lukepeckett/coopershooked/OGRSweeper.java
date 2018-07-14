@@ -5,35 +5,34 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import com.lukepeckett.coopershooked.game.OGRSweeper.GridCell;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSGridAdapter;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class OGRSweeper extends AppCompatActivity implements View.OnTouchListener{
+public class OGRSweeper extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener{
 
     private ImageButton backButton;
     private TextView scoreView;
     private RelativeLayout gameLayout;
     private OGRSweeperGame game;
+    private ToggleButton flagButton;
 
+    private boolean shouldFlag = false;
     private int gridSize = 8;
 
     @Override
@@ -57,9 +56,15 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         game = new OGRSweeperGame(this, gridSize, scoreView);
         gameLayout.addView(game);
 
+        flagButton = findViewById(R.id.ogrsFlagButton);
+        flagButton.setOnClickListener(this);
 
     }
 
+    private void flagButtonPressed() {
+        shouldFlag = !shouldFlag;
+        game.setFlagCells(shouldFlag);
+    }
 
     public static Intent makeIntent(Context context) {
         Intent intent = new Intent(context, OGRSweeper.class);
@@ -88,34 +93,43 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         return false;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ogrsFlagButton:
+                flagButtonPressed();
+                return;
+        }
+    }
+
     public static class OGRSweeperGame extends GridView implements View.OnClickListener{
 
         private OGRSGridAdapter adapter;
         private ArrayList<ArrayList<Button>> buttons;
-        private ArrayList<ArrayList<Boolean>> clicked;
-        private ArrayList<ArrayList<Integer>> bombPositions;
-        private ArrayList<ArrayList<Integer>> numNearBombs;
+        private ArrayList<ArrayList<GridCell>> cells;
 
         private int size;
         private int numMines = 10;
+        private int flagsPlaced = 0;
         private Random rand;
         private boolean gameOver = false;
         private TextView scoreView;
-
+        private Context context;
         private Toast gridLocToast;
+        private boolean flagCells = false;
 
         public OGRSweeperGame(Context context, int size, TextView scoreView){
             super(context);
             this.size = size;
             this.rand = new Random();
             this.scoreView = scoreView;
-
+            this.context = context;
             gridLocToast = Toast.makeText(context, "0, 0", Toast.LENGTH_SHORT);
 
             initGrid(context, size);
         }
 
-        private void initGrid(Context context, int size) {
+        public void initGrid(Context context, int size) {
             this.setNumColumns(size);
 
             buttons = new ArrayList<>();
@@ -130,52 +144,46 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
             adapter = new OGRSGridAdapter(context, buttons);
             this.setAdapter(adapter);
 
-            clicked = new ArrayList<>();
-            for(int y = 0; y < size; y++) {
-                clicked.add(new ArrayList<Boolean>());
-                for(int x = 0; x < size; x++) {
-                    clicked.get(y).add(false);
-                }
-            }
-
-            bombPositions = new ArrayList<>();
-            for(int y = 0; y < size; y++) {
-                bombPositions.add(new ArrayList<Integer>());
-                for(int x = 0; x < size; x++) {
-                    bombPositions.get(y).add(0);
+            cells = new ArrayList<>();
+            for(int i = 0; i < size; i++) {
+                cells.add(new ArrayList<GridCell>());
+                for(int j = 0; j < size; j++) {
+                    cells.get(i).add(new GridCell(GridCell.EMPTY));
                 }
             }
             for(int i = 0; i < numMines; i++) {
                 int randInt = rand.nextInt(size * size);
                 boolean inUse = true;
                 while (inUse) {
-                    int row = randInt / size;
-                    int col = randInt % size;
-                    if(bombPositions.get(row).get(col) == 1) {
+                    int col = randInt / size;
+                    int row = randInt % size;
+                    if(cells.get(col).get(row).hasBomb()) {
                         randInt = rand.nextInt(size * size);
                     }
                     else {
-                        bombPositions.get(col).set(row, 1);
+                        cells.get(col).get(row).setHasBomb(true);
                         inUse = false;
+                        //buttons.get(col).get(row).setText("X");
                     }
                 }
             }
 
-            numNearBombs = new ArrayList<>();
             for(int i = 0; i < size; i++) {
-                numNearBombs.add(new ArrayList<Integer>());
                 for(int j = 0; j < size; j++) {
                     int surroundingBombCount = 0;
-                    for(int x = i - 1; x < i + 1; x++) {
-                        for(int y = j - 1; y < j + 1; y++) {
+                    int checks = 0;
+                    for(int x = i - 1; x < i + 2; x++) {
+                        for(int y = j - 1; y < j + 2; y++) {
+                            checks ++;
                             if(x >= 0 && x < buttons.size() && y >= 0 && y < buttons.size()) {
-                                if(bombPositions.get(x).get(y) == 1) {
+                                if(cells.get(x).get(y).hasBomb()) {
                                     surroundingBombCount ++;
                                 }
                             }
                         }
                     }
-                    numNearBombs.get(i).add(surroundingBombCount);
+                    cells.get(i).get(j).setNearBombCount(surroundingBombCount);
+                    Log.w("Checks", "Checks: " + checks);
                 }
             }
 
@@ -184,57 +192,82 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         @Override
         public void onClick(View v) {
 
+            if(gameOver)
+                return;
+
             OGRSButton tempButton = (OGRSButton) v;
-            int row = tempButton.getId() / size;
-            int col = tempButton.getId() % size;
+            int col = tempButton.getId() / size;
+            int row = tempButton.getId() % size;
 
-            gridLocToast.cancel();
-            gridLocToast = Toast.makeText(v.getContext(), String.valueOf(col + ", " + String.valueOf(row) + " : " + String.valueOf(bombPositions.get(col).get(row))), Toast.LENGTH_LONG);
-            gridLocToast.show();
+            if(cells.get(col).get(row).getStatus() == GridCell.EMPTY && flagCells) {
+                ((OGRSButton) v).setText("F");
+                v.getBackground().setColorFilter(0xe0ff0000, PorterDuff.Mode.SRC_ATOP);
+                cells.get(col).get(row).setStatus(GridCell.FLAGGED_EMPTY);
+                flagsPlaced ++;
+                scoreView.setText(String.valueOf(numMines - flagsPlaced));
+                return;
+            }
 
-            v.setClickable(false);
+            if(cells.get(col).get(row).getStatus() == GridCell.FLAGGED_EMPTY) {
+                if(!flagCells)
+                    return;
+                else if(flagCells){
+                    ((OGRSButton)v).setText("");
+                    cells.get(col).get(row).setStatus(GridCell.EMPTY);
+                    v.getBackground().clearColorFilter();
+                    flagsPlaced --;
+                    scoreView.setText(String.valueOf(numMines - flagsPlaced));
+                    return;
+                }
+            }
 
-            checkSurroundings(row, col, v);
-
-            if(bombPositions.get(col).get(row) == 1) {
+            if(cells.get(col).get(row).hasBomb() && cells.get(col).get(row).getStatus() != GridCell.FLAGGED_EMPTY) {
                 ((OGRSButton) v).setText("X");
                 gameOver = true;
                 scoreView.setText(R.string.gameOver);
+                v.setClickable(false);
+                return;
             }
+
+            cells.get(col).get(row).setStatus(GridCell.UNCOVERED);
+
+            checkSurroundings(row, col, v);
+
+
         }
 
         private void checkSurroundings(int row, int col, View v) {
-            int surroundingBombCount = 0;
-            for(int i = col - 1; i < col + 2; i++) {
-                for(int j = row - 1; j < row + 2; j++) {
-                    if(i >= 0 && i < buttons.size() && j >= 0 && j < buttons.size()) {
-                        if(bombPositions.get(i).get(j) == 1) {
-                            surroundingBombCount ++;
-                        }
-                    }
-                }
+
+            if(!cells.get(col).get(row).hasBomb() && cells.get(col).get(row).getNearBombCount() != 0){
+                ((OGRSButton)v).setText(String.valueOf(cells.get(col).get(row).getNearBombCount()));
+                ((OGRSButton)v).setClickable(false);
+                cells.get(col).get(row).setStatus(GridCell.UNCOVERED);
             }
 
-            if(surroundingBombCount == 0) {
-                Log.w("Working", "Working");
+            else if(cells.get(col).get(row).getNearBombCount() == 0) {
+
                 ((OGRSButton) v).setText("0");
-                clicked.get(row).set(col, true);
+                v.getBackground().setColorFilter(0xe0ffffff, PorterDuff.Mode.SRC_ATOP);
+                ((OGRSButton)v).setClickable(false);
+                cells.get(col).get(row).setStatus(GridCell.UNCOVERED);
                 for(int i = col - 1; i < col + 2; i++) {
                     for(int j = row - 1; j < row + 2; j++) {
-                        if(i >= 0 && i < buttons.size() && j >= 0 && j < buttons.size() && !clicked.get(row).get(col)) {
-                            if(bombPositions.get(i).get(j) == 1) {
-                                checkSurroundings(row, col, buttons.get(col).get(row));
-                            }
+                        if(i >= 0 && i < buttons.size() && j >= 0 && j < buttons.size() && cells.get(i).get(j).getStatus() == GridCell.EMPTY) {
+                            checkSurroundings(j, i, buttons.get(i).get(j));
                         }
                     }
                 }
-            }
-            else {
-                ((OGRSButton)v).setText(String.valueOf(surroundingBombCount));
-                clicked.get(row).set(col, true);
             }
         }
 
+        public boolean isFlagCells() {
+            return flagCells;
+        }
+
+        public void setFlagCells(boolean flagCells) {
+            this.flagCells = flagCells;
+            Log.w("Flag", String.valueOf(flagCells));
+        }
     }
 
 }
