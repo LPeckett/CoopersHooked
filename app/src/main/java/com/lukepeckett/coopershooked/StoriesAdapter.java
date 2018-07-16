@@ -55,15 +55,6 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
                     }
                 }
             });
-            itemView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(listener != null) {
-                        listener.onItemTouch(v, event);
-                    }
-                    return false;
-                }
-            });
         }
     }
 

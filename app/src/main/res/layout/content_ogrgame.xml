@@ -38,10 +38,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:background="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_36" />
+        app:srcCompat="@drawable/ic_arrow_36"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:focusable="true"
+        android:clickable="true"/>
 
     <RelativeLayout
         android:id="@+id/ogrScoreLayout"
@@ -74,51 +76,61 @@
             android:id="@+id/ogrUpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_up_64" />
+            app:srcCompat="@drawable/ic_arrow_up_64"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:focusable="true"
+            android:clickable="true"/>
 
         <ImageButton
             android:id="@+id/ogrRightButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_right_64" />
+            app:srcCompat="@drawable/ic_arrow_right_64"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:focusable="true"
+            android:clickable="true"/>
 
         <ImageButton
             android:id="@+id/ogrLeftButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_left_64" />
+            app:srcCompat="@drawable/ic_arrow_left_64"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:focusable="true"
+            android:clickable="true"/>
 
         <ImageButton
             android:id="@+id/ogrDownButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_arrow_down_64" />
+            app:srcCompat="@drawable/ic_arrow_down_64"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:focusable="true"
+            android:clickable="true"/>
 
         <ImageButton
             android:id="@+id/ogrPauseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
             app:layout_constraintBottom_toTopOf="@+id/ogrDownButton"
             app:layout_constraintEnd_toStartOf="@+id/ogrRightButton"
             app:layout_constraintStart_toEndOf="@+id/ogrLeftButton"
             app:layout_constraintTop_toBottomOf="@+id/ogrUpButton"
-            app:srcCompat="@drawable/ic_pause_64" />
+            app:srcCompat="@drawable/ic_pause_64"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:focusable="true"
+            android:clickable="true"/>
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

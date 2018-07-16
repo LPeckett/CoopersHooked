@@ -46,10 +46,16 @@
         <activity
             android:name=".OGRGame"
             android:label="@string/title_activity_ogrgame"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OGRSweeper"
             android:label="@string/title_activity_ogrsweeper"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Invaders"
+            android:label="@string/title_activity_invaders"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

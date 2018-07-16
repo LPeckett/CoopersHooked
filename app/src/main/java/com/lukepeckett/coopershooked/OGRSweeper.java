@@ -27,7 +27,7 @@ import com.lukepeckett.coopershooked.media.SoundController;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class OGRSweeper extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener{
+public class OGRSweeper extends AppCompatActivity implements View.OnClickListener{
 
     private ImageButton backButton;
     private TextView scoreView;
@@ -54,7 +54,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
     private void loadComponents() {
         backButton = findViewById(R.id.ogrsBackButton);
-        backButton.setOnTouchListener(this);
+        backButton.setOnClickListener(this);
 
         scoreView = findViewById(R.id.ogrsScoreTextView);
 
@@ -84,28 +84,6 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                v.getBackground().setColorFilter(0xe0dddddd, PorterDuff.Mode.SRC_ATOP);
-                v.invalidate();
-                break;
-
-            case MotionEvent.ACTION_UP:
-                v.getBackground().clearColorFilter();
-                v.invalidate();
-                break;
-        }
-
-        switch (v.getId()) {
-            case (R.id.ogrsBackButton):
-                finish();
-                break;
-        }
-        return false;
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ogrsFlagButton:
@@ -114,6 +92,10 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
             case R.id.ogrsNewGameButton:
                 game.initGrid(this, gridSize);
+                return;
+
+            case (R.id.ogrsBackButton):
+                finish();
                 return;
         }
     }
@@ -210,7 +192,6 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
         }
 
         private boolean checkWin() {
-            Log.w("Checking win", "Checking......");
             gameWon = true;
             for(ArrayList<GridCell> gridCells : cells) {
                 for(GridCell g : gridCells) {
@@ -222,7 +203,6 @@ public class OGRSweeper extends AppCompatActivity implements View.OnTouchListene
 
             if(gameWon) {
                 scoreView.setText("Game Won");
-                Log.w("Checking win", "Won");
                 return true;
             }
             else

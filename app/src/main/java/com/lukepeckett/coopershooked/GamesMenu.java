@@ -32,6 +32,7 @@ public class GamesMenu extends AppCompatActivity implements View.OnClickListener
 
     private String snOGRoadieake = "Sn(OG Roadie)ake";
     private String ogrSweeper = "OG Roadie Sweeper";
+    private String invaders = "Enoch Invaders";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class GamesMenu extends AppCompatActivity implements View.OnClickListener
 
         games.add(new GamesMenuItem(snOGRoadieake, R.drawable.ic_lock));
         games.add(new GamesMenuItem(ogrSweeper, R.drawable.ic_lock));
+        games.add(new GamesMenuItem(invaders, R.drawable.ic_lock));
     }
 
     private void itemClicked(int position) {
@@ -79,6 +81,10 @@ public class GamesMenu extends AppCompatActivity implements View.OnClickListener
         else if(games.get(position).getName().equals(ogrSweeper)) {
             Intent ogrsIntent = OGRSweeper.makeIntent(this);
             startActivity(ogrsIntent);
+        }
+        else if(games.get(position).getName().equals(invaders)) {
+            Intent invadersIntent = Invaders.makeIntent(this);
+            startActivity(invadersIntent);
         }
     }
 

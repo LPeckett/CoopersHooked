@@ -23,4 +23,6 @@
     <string name="flag"> Flag</string>
     <string name="ogrsSweeper">OG Roadie Sweeper</string>
     <string name="newGame">New Game</string>
+    <string name="title_activity_invaders">Invaders</string>
+    <string name="encohInvaders">Enoch Invaders</string>
 </resources>
