@@ -53,7 +53,7 @@
 
     <RelativeLayout
         android:id="@+id/invScoreLayout"
-        android:layout_width="match_constraint"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/invControlLayout"
         app:layout_constraintEnd_toEndOf="parent"

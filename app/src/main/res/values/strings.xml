@@ -25,4 +25,16 @@
     <string name="newGame">New Game</string>
     <string name="title_activity_invaders">Invaders</string>
     <string name="encohInvaders">Enoch Invaders</string>
+    <string name="title_activity_ogrssettings">OGRSSettings</string>
+    <string name="gridWidth">Grid Width</string>
+    <string name="gridHeight">Grid Height</string>
+    <string name="numBombs">Number of Bombs</string>
+    <string name="difficulty">Difficulty</string>
+    <string-array name="difficulties">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Expert</item>
+        <item>Custom</item>
+    </string-array>
 </resources>

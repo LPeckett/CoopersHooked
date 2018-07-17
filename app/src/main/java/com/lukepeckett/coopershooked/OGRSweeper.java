@@ -24,6 +24,7 @@ import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSGridAdapter;
 import com.lukepeckett.coopershooked.media.SoundController;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -97,10 +98,15 @@ public class OGRSweeper extends AppCompatActivity implements View.OnClickListene
             case (R.id.ogrsBackButton):
                 finish();
                 return;
+
+            case R.id.ogrsSettingsButton:
+                Intent settingsIntent = OGRSSettings.makeIntent(this);
+                startActivity(settingsIntent);
+                return;
         }
     }
 
-    public static class OGRSweeperGame extends GridView implements View.OnClickListener{
+    public static class OGRSweeperGame extends GridView implements View.OnClickListener {
 
         private OGRSGridAdapter adapter;
         private ArrayList<ArrayList<Button>> buttons;

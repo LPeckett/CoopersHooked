@@ -56,6 +56,10 @@
         <activity
             android:name=".Invaders"
             android:label="@string/title_activity_invaders"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OGRSSettings"
+            android:label="@string/title_activity_ogrssettings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
