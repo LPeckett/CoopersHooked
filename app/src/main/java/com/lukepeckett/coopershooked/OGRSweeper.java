@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.lukepeckett.coopershooked.game.OGRSweeper.Difficulty;
 import com.lukepeckett.coopershooked.game.OGRSweeper.GridCell;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSGridAdapter;
@@ -51,6 +52,8 @@ public class OGRSweeper extends AppCompatActivity implements View.OnClickListene
 
         setContentView(R.layout.activity_ogrsweeper);
         loadComponents();
+
+        new Difficulty();
     }
 
     private void loadComponents() {
