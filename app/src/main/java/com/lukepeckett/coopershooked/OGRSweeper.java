@@ -13,7 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +27,19 @@ import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSButton;
 import com.lukepeckett.coopershooked.game.OGRSweeper.OGRSGridAdapter;
 import com.lukepeckett.coopershooked.media.SoundController;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Random;
 
 public class OGRSweeper extends AppCompatActivity implements View.OnClickListener{
 
     private ImageButton backButton;
     private TextView scoreView;
-    private RelativeLayout gameLayout;
+    private HorizontalScrollView gameLayout;
     private OGRSweeperGame game;
     private ToggleButton flagButton;
     private Button settingsButton;
@@ -64,6 +70,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnClickListene
 
         gameLayout = findViewById(R.id.ogrsLayout);
         game = new OGRSweeperGame(this, gridSize, scoreView);
+        game.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         gameLayout.addView(game);
 
         flagButton = findViewById(R.id.ogrsFlagButton);
@@ -95,7 +102,7 @@ public class OGRSweeper extends AppCompatActivity implements View.OnClickListene
                 return;
 
             case R.id.ogrsNewGameButton:
-                game.initGrid(this, gridSize);
+                game.initGrid(this);
                 return;
 
             case (R.id.ogrsBackButton):
@@ -132,10 +139,29 @@ public class OGRSweeper extends AppCompatActivity implements View.OnClickListene
             this.scoreView = scoreView;
             this.context = context;
 
-            initGrid(context, size);
+            loadSettings();
+
+            initGrid(context);
         }
 
-        public void initGrid(Context context, int size) {
+        public void loadSettings() {
+            Properties properties = new Properties();
+            try {
+                InputStream is = context.openFileInput("ogrs_settings.properties");
+                properties.load(is);
+                size = Integer.valueOf(properties.getProperty("width"));
+                numMines = Integer.valueOf(properties.getProperty("numBombs"));
+                Log.e("Settings", "Size: " + size + ", Num Bombs: " + numMines);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void initGrid(Context context) {
+
+            loadSettings();
 
             flagsPlaced = 0;
 

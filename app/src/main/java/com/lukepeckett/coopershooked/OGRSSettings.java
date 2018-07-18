@@ -20,9 +20,13 @@ import android.widget.TextView;
 
 import com.lukepeckett.coopershooked.game.OGRSweeper.Difficulty;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
@@ -57,18 +61,28 @@ public class OGRSSettings extends AppCompatActivity implements View.OnClickListe
 
     private void loadSettings() {
         Properties properties = new Properties();
-        InputStream is = getResources().openRawResource(R.raw.ogrs_settings);
         try {
+            InputStream is = openFileInput("ogrs_settings.properties");
             properties.load(is);
             gridWidth = Integer.valueOf(properties.getProperty("width"));
             gridHeight = Integer.valueOf(properties.getProperty("height"));
             difficulty = properties.getProperty("difficulty");
             numBombs = Integer.valueOf(properties.getProperty("numBombs"));
+            difficultySpinner.setSelection(getIndex(difficultySpinner, difficulty));
+            Log.e("Settings", "Width: " + gridWidth + ", Height: " + gridHeight + ", Difficulty: " + difficulty + ", Bomb Count: " + numBombs);
             setSeekBarValues();
-            Log.w("Testing", "Working");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private int getIndex(Spinner spinner, String value) {
+        for(int i = 0; i < spinner.getCount(); i++) {
+            if(spinner.getItemAtPosition(i).equals(value)) {
+                return i;
+            }
+        }
+        return Difficulty.NUM_DIFFICULTIES;
     }
 
     private void loadComponents() {
@@ -104,6 +118,21 @@ public class OGRSSettings extends AppCompatActivity implements View.OnClickListe
     }
 
     private void backPressed() {
+        //Saving properties to file
+        File settingsFile = new File("ogrs_settings.properties");
+        Properties properties = new Properties();
+        try {
+            OutputStream os = openFileOutput("ogrs_settings.properties", MODE_PRIVATE);
+            properties.setProperty("difficulty", difficulty);
+            properties.setProperty("width", String.valueOf(gridWidth));
+            properties.setProperty("height", String.valueOf(gridHeight));
+            properties.setProperty("numBombs", String.valueOf(numBombs));
+            properties.store(os, "Settings Properties");
+        } catch (FileNotFoundException e) {
+            Log.e("File Not Found", "The Specified file could not be found");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         finish();
     }
 
@@ -173,6 +202,10 @@ public class OGRSSettings extends AppCompatActivity implements View.OnClickListe
             widthBar.setProgress(Difficulty.ExpertDifficulty.WIDTH - gridMin);
             heightBar.setProgress(Difficulty.ExpertDifficulty.HEIGHT - gridMin);
             bombCountBar.setProgress(Difficulty.ExpertDifficulty.BOMB_COUNT - bombCountMin);
+        } else if (difficulty.equals(Difficulty.CUSTOM)) {
+            widthBar.setProgress(gridWidth - gridMin);
+            heightBar.setProgress(gridHeight - gridMin);
+            bombCountBar.setProgress(numBombs - bombCountMin);
         }
     }
 
