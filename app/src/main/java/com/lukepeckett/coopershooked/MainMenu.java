@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.lukepeckett.coopershooked.media.SoundController;
 
@@ -45,7 +46,13 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         new SettingsHandler();
 
         loadSettings();
+        login();
 
+    }
+
+    private void login() {
+        Intent loginIntent = Login.makeIntent(this);
+        startActivity(loginIntent);
     }
 
     private void initComponents() {

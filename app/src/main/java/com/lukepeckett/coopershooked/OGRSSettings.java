@@ -2,6 +2,7 @@ package com.lukepeckett.coopershooked;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
@@ -55,6 +56,11 @@ public class OGRSSettings extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ogrssettings);
+
+        int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
         loadComponents();
         loadSettings();
     }

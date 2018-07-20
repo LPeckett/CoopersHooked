@@ -37,4 +37,16 @@
         <item>Expert</item>
         <item>Custom</item>
     </string-array>
+    <string name="title_activity_login">Login</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="notGotAccount">Not got an account? </string>
+    <string name="clickHere">Click Here</string>
+    <string name="usernameOrEmail">Username or Email</string>
+    <string name="signUp">Sign Up</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="alreadyHaveAccount">Already have an account?</string>
 </resources>
